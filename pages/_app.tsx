@@ -1,8 +1,9 @@
-import type { AppProps } from 'next/app'
+import type { AppProps } from "next/app";
 import { WagmiConfig, createClient } from "wagmi";
 import { ConnectKitProvider, getDefaultClient } from "connectkit";
-import { bscTestnet } from 'wagmi/chains'
-import '@/styles/globals.css'
+import { bscTestnet } from "wagmi/chains";
+import Header from "@/components/header/header";
+import "@/styles/globals.css";
 
 const client = createClient(
   getDefaultClient({
@@ -16,9 +17,12 @@ const client = createClient(
 export default function App({ Component, pageProps }: AppProps) {
   return (
     <WagmiConfig client={client}>
-      <ConnectKitProvider>
-        <Component {...pageProps} />
+      <ConnectKitProvider theme="auto" mode="dark">
+        <div className="bg-gradient-to-b from-[#340834] via-[#140814] to-[#040804] relative h-[100vh] w-full">
+          <Header />
+          <Component {...pageProps} />
+        </div>
       </ConnectKitProvider>
     </WagmiConfig>
-  )
+  );
 }
