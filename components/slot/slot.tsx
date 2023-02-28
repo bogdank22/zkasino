@@ -38,7 +38,7 @@ export default function Slot() {
   useEffect(() => {
     console.log("provider====", provider);
     console.log("signer====", signer);
-    console.log("slotContract===",slotContractSigner);
+    console.log("slotContract===", slotContractSigner);
     getApproveAmount();
   }, []);
 
@@ -51,7 +51,7 @@ export default function Slot() {
         contracts.slotContract.address
       )
     );
-    console.log("allowance = ",ethers.utils.formatEther(String(allowance)));
+    console.log("allowance = ", ethers.utils.formatEther(String(allowance)));
     setApproveValue(Number(ethers.utils.formatEther(String(allowance))));
   };
 
@@ -75,23 +75,30 @@ export default function Slot() {
   };
 
   const playClick = async () => {
-    try{
+    try {
       setButtonDisable(true);
       const _wager = ethers.utils.parseEther(String(wager));
       const _stopGain = ethers.utils.parseEther(String(stopGain));
       const _stopLoss = ethers.utils.parseEther(String(stopLoss));
       const tokenAddress = contracts.tokenContract.address;
-      console.log("wager = ",_wager);
-      console.log("address = ",address);
+      console.log("wager = ", _wager);
+      console.log("address = ", address);
       console.log("stopGain = ", _stopGain);
-      console.log("stopLoss = ",_stopLoss);
-      const transaction = await slotContractSigner!.Slots_Play(_wager,tokenAddress,multiBets,_stopGain,_stopLoss,{value: ethers.utils.parseEther("0.1")});
+      console.log("stopLoss = ", _stopLoss);
+      const transaction = await slotContractSigner!.Slots_Play(
+        _wager,
+        tokenAddress,
+        multiBets,
+        _stopGain,
+        _stopLoss,
+        { value: ethers.utils.parseEther("0.1") }
+      );
       const tx = await transaction.wait();
-      if(tx !== null) {
+      if (tx !== null) {
         getApproveAmount();
         setButtonDisable(false);
       }
-    } catch(err) {
+    } catch (err) {
       setButtonDisable(false);
       console.log(err);
     }
@@ -103,8 +110,8 @@ export default function Slot() {
         SLOTS
       </h1>
       <div className="flex justify-center mt-[100px]">
-        <div className="flex gap-4 w-[1200px]">
-          <div className="grid grid-cols-3 gap-3 bg-transparent bg-white/5 p-4 rounded-[8px]">
+        <div className="flex gap-4 w-[1300px]">
+          <div className="grid grid-cols-3 gap-3 bg-white/5 p-4 rounded-[8px]">
             <div className="px-[10px] py-[50px] bg-gradient-to-b from-white/30 via-white to-white/30 rounded-[3px] flex items-center">
               <div>
                 <Image
@@ -240,7 +247,179 @@ export default function Slot() {
               )}
             </div>
           </div>
-          <div></div>
+          <div className="bg-white/5 p-4 rounded-[8px]">
+            <div className="grid grid-cols-3 gap-3">
+              <div>
+                <h1 className="text-[15px] text-gray-400">Outcome</h1>
+                <div className="grid grid-cols-3 gap-10 ">
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-10">
+                  <Image
+                    src="https://play.zkasino.io/_next/static/media/feelsgood.8c010c53.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="https://play.zkasino.io/_next/static/media/feelsgood.8c010c53.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="https://play.zkasino.io/_next/static/media/feelsgood.8c010c53.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-10">
+                  <Image
+                    src="https://play.zkasino.io/_next/static/media/doge.90a2b1ed.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="https://play.zkasino.io/_next/static/media/doge.90a2b1ed.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                    <Image
+                      src="https://play.zkasino.io/_next/static/media/doge.90a2b1ed.png"
+                      width={30}
+                      height={30}
+                      alt="image"
+                    />
+                </div>
+                <div className="grid grid-cols-3 gap-10">
+                  <Image
+                    src="https://play.zkasino.io/_next/static/media/yeschad.da140e9b.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="https://play.zkasino.io/_next/static/media/yeschad.da140e9b.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="https://play.zkasino.io/_next/static/media/yeschad.da140e9b.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-10">
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-10">
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-10">
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                </div>
+                <div className="grid grid-cols-3 gap-10">
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                </div>
+              </div>
+              <div>
+                <h1 className="text-[15px] text-gray-400">Multiplier</h1>
+              </div>
+              <div>
+                <h1 className="text-[15px] text-gray-400">Payout</h1>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
