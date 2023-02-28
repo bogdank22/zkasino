@@ -1,46 +1,101 @@
 import { useEffect, useState } from "react";
-import type { Contract } from "ethers";
-import { useAccount, useContract, useProvider } from "wagmi";
+import { Contract, ethers } from "ethers";
+import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import Image from "next/image";
 import contracts from "../../const/abi.json";
 
 export default function Slot() {
   const { address, isConnected } = useAccount();
-  const [approveState, setApproveState] = useState<boolean>(false);
   const provider = useProvider();
+  const { data: signer, isError, isLoading } = useSigner();
 
-  const tokenContract: Contract | null = useContract({
+  const tokenContractProvider: Contract | null = useContract({
     address: contracts.tokenContract.address,
     abi: contracts.tokenContract.abi,
     signerOrProvider: provider,
   });
 
+  const tokenContractSigner: Contract | null = useContract({
+    address: contracts.tokenContract.address,
+    abi: contracts.tokenContract.abi,
+    signerOrProvider: signer,
+  });
+
+  const slotContractSigner: Contract | null = useContract({
+    address: contracts.slotContract.address,
+    abi: contracts.slotContract.abi,
+    signerOrProvider: signer,
+  });
+
+  const [approveValue, setApproveValue] = useState<Number>(0);
   const [wager, setWager] = useState<number>(0);
   const [multiBets, setMultiBets] = useState<number>(1);
   const [stopGain, setStopGain] = useState<number>(0);
   const [stopLoss, setStopLoss] = useState<number>(0);
   const [totalWager, setTotalWager] = useState<number>(0);
+  const [buttonDisable, setButtonDisable] = useState<boolean>(false);
 
   useEffect(() => {
+    console.log("provider====", provider);
+    console.log("signer====", signer);
+    console.log("slotContract===",slotContractSigner);
     getApproveAmount();
   }, []);
 
   const getApproveAmount = async () => {
     console.log(address);
-    console.log(tokenContract);
+    console.log(tokenContractProvider);
     const allowance = Number(
-      await tokenContract!.allowance(address, contracts.slotContract.address)
+      await tokenContractProvider!.allowance(
+        address,
+        contracts.slotContract.address
+      )
     );
-    console.log("allownce = ", allowance);
-    
-    if(allowance >= totalWager){
-      setApproveState(true);
-    } else setApproveState(false);
+    console.log("allowance = ",ethers.utils.formatEther(String(allowance)));
+    setApproveValue(Number(ethers.utils.formatEther(String(allowance))));
   };
 
-  const ApproveClick = async() => {
-    
-  }
+  const ApproveClick = async () => {
+    try {
+      setButtonDisable(true);
+      const transaction = await tokenContractSigner!.approve(
+        contracts.slotContract.address,
+        ethers.utils.parseEther(String(totalWager))
+      );
+      const tx = await transaction.wait();
+
+      if (tx !== null) {
+        getApproveAmount();
+        setButtonDisable(false);
+      }
+    } catch (err) {
+      setButtonDisable(false);
+      console.log(err);
+    }
+  };
+
+  const playClick = async () => {
+    try{
+      setButtonDisable(true);
+      const _wager = ethers.utils.parseEther(String(wager));
+      const _stopGain = ethers.utils.parseEther(String(stopGain));
+      const _stopLoss = ethers.utils.parseEther(String(stopLoss));
+      const tokenAddress = contracts.tokenContract.address;
+      console.log("wager = ",_wager);
+      console.log("address = ",address);
+      console.log("stopGain = ", _stopGain);
+      console.log("stopLoss = ",_stopLoss);
+      const transaction = await slotContractSigner!.Slots_Play(_wager,tokenAddress,multiBets,_stopGain,_stopLoss,{value: ethers.utils.parseEther("0.1")});
+      const tx = await transaction.wait();
+      if(tx !== null) {
+        getApproveAmount();
+        setButtonDisable(false);
+      }
+    } catch(err) {
+      setButtonDisable(false);
+      console.log(err);
+    }
+  };
 
   return (
     <div>
@@ -161,12 +216,28 @@ export default function Slot() {
                 </h1>
               </div>
             </div>
-            <div className="py-2 px-4 bg-white/5 rounded-[4px] mt-2">
-            {isConnected === false ? (
-              <div className="text-center text-gray-300 font-bold">Connect First</div>
-            ) : (
-              approveState === false ? <div className="text-center text-gray-300 font-bold" onClick={ApproveClick}>Approve TUSD</div> : <div className="text-center text-gray-300 font-bold">Play</div>
-            )}
+            <div className="py-2 px-4 bg-white/5 rounded-[4px] mt-2 flex justify-center">
+              {isConnected === false ? (
+                <h1 className="text-center text-gray-300 font-bold">
+                  Connect First
+                </h1>
+              ) : approveValue < totalWager ? (
+                <button
+                  className="text-center text-gray-300 font-bold cursor-pointer"
+                  onClick={ApproveClick}
+                  disabled={buttonDisable}
+                >
+                  Approve TUSD
+                </button>
+              ) : (
+                <button
+                  className="text-center text-gray-300 font-bold cursor-pointer"
+                  disabled={buttonDisable}
+                  onClick={playClick}
+                >
+                  Play
+                </button>
+              )}
             </div>
           </div>
           <div></div>
