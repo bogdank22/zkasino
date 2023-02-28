@@ -1,14 +1,12 @@
-import Head from "next/head";
-import Image from "next/image";
-import { Inter } from "next/font/google";
-import  Slot  from "../components/slot/slot";
+import type { NextPage } from 'next';
+import Slot from '../components/slot/slot';
 
-const inter = Inter({ subsets: ["latin"] });
-
-export default function Home() {
+const Home: NextPage = () => {
   return (
     <>
-        <Slot />
+      <Slot />
     </>
   );
-}
+};
+
+export default Home;
