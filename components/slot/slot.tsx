@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { Contract, ethers } from "ethers";
 import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import Image from "next/image";
+import { Slider, Switch } from 'antd';
 import contracts from "../../const/abi.json";
 
 export default function Slot() {
@@ -39,8 +40,9 @@ export default function Slot() {
     console.log("provider====", provider);
     console.log("signer====", signer);
     console.log("slotContract===", slotContractSigner);
-    getApproveAmount();
-  }, []);
+    if(isConnected)
+      getApproveAmount();
+  }, [isConnected]);
 
   const getApproveAmount = async () => {
     console.log(address);
@@ -149,69 +151,64 @@ export default function Slot() {
               <div className="flex justify-between bg-[#2A0E23] p-[3px] border-[1px] border-[#2A0E23] hover:border-[#f3d9ae] mt-[5px] rounded-[4px]">
                 <h1 className="text-slate-600 font-bold">X</h1>
                 <input
+                  type="text"
                   className="text-slate-600 font-bold w-full text-right text-white bg-transparent border-none focus:outline-none"
                   placeholder="0"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setWager(Number(e.target.value));
                     setTotalWager(Number(e.target.value) * multiBets);
                   }}
+                  defaultValue={0}
                 ></input>
               </div>
               <div></div>
             </div>
             <div className="py-2 px-4 bg-white/5 rounded-[4px] mt-2">
               <div className="flex justify-between">
-                <h1 className="text-xs text-white">Multi Bets</h1>
+                <h1 className="text-xs text-white">Multiple Bets</h1>
                 <div className="flex items-center">
                   <input
+                    type="text"
                     className="w-[60px] h-[20px] bg-[#2A0E23] border-[1px] border-[#2A0E23] rounded-[4px] hover:border-[#f3d9ae] focus:outline-none font-bold  text-right text-white"
                     onChange={(e) => {
                       setMultiBets(Number(e.target.value));
                       setTotalWager(wager * Number(e.target.value));
                     }}
-                    defaultValue={1}
-                  />
+                    value={multiBets.toString()}
+                />
                 </div>
               </div>
 
-              {/* <Slider
-                defaultValue={multiBets}
-                aria-label="Default"
-                valueLabelDisplay="auto"
-                color="secondary"
-                onChange={(
-                  event: Event,
+              <Slider defaultValue={1} min={1} max={100} disabled={false} onChange={(
                   value: number,
-                  activeThumb: number
                 ) => {
                   setMultiBets(value);
                   setTotalWager(wager * value);
-                }}
-                value={multiBets}
-                min={1}
-                max={100}
-              /> */}
-
+                }} value={multiBets} />
               <div className="flex justify-between">
                 <h1 className="text-xs text-white">Stop&nbsp;Gain</h1>
                 <input
+                  type="text"
                   className="w-[100px] h-[20px] bg-[#2A0E23] border-[1px] border-[#2A0E23] rounded-[4px] hover:border-[#f3d9ae] focus:outline-none font-bold text-[11px]  text-right text-white"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setStopGain(Number(e.target.value));
                   }}
                   placeholder="No limit"
+                  defaultValue={0}
                 />
               </div>
 
               <div className="flex justify-between mt-[2px]">
                 <h1 className="text-xs text-white">Stop Gain</h1>
-                <input
+                {/* <input
+                  type="text"
                   className="w-[100px] h-[20px] bg-[#2A0E23] border-[1px] border-[#2A0E23] rounded-[4px] hover:border-[#f3d9ae] focus:outline-none font-bold text-[11px]  text-right text-white"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setStopLoss(Number(e.target.value));
                   }}
                   placeholder="No limit"
-                />
+                  defaultValue={0}
+                /> */}
               </div>
 
               <h1 className="text-small text-white">Total Wager</h1>
@@ -228,7 +225,7 @@ export default function Slot() {
                 <h1 className="text-center text-gray-300 font-bold">
                   Connect First
                 </h1>
-              ) : approveValue < totalWager ? (
+              ) : (approveValue < totalWager) ? (
                 <button
                   className="text-center text-gray-300 font-bold cursor-pointer"
                   onClick={ApproveClick}
@@ -333,19 +330,39 @@ export default function Slot() {
                 </div>
                 <div className="grid grid-cols-3 gap-10">
                   <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    src="https://play.zkasino.io/_next/static/media/bear.5513da11.png"
                     width={30}
                     height={30}
                     alt="image"
                   />
                   <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    src="https://play.zkasino.io/_next/static/media/bear.5513da11.png"
                     width={30}
                     height={30}
                     alt="image"
                   />
                   <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    src="https://play.zkasino.io/_next/static/media/bear.5513da11.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                </div>                
+                <div className="grid grid-cols-3 gap-10">
+                  <Image
+                    src="https://play.zkasino.io/_next/static/media/grug.3d2f545d.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="https://play.zkasino.io/_next/static/media/grug.3d2f545d.png"
+                    width={30}
+                    height={30}
+                    alt="image"
+                  />
+                  <Image
+                    src="https://play.zkasino.io/_next/static/media/grug.3d2f545d.png"
                     width={30}
                     height={30}
                     alt="image"
@@ -353,70 +370,55 @@ export default function Slot() {
                 </div>
                 <div className="grid grid-cols-3 gap-10">
                   <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    src="https://play.zkasino.io/_next/static/media/grug.3d2f545d.png"
                     width={30}
                     height={30}
                     alt="image"
                   />
                   <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    src="https://play.zkasino.io/_next/static/media/grug.3d2f545d.png"
                     width={30}
                     height={30}
                     alt="image"
                   />
-                  <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
-                    width={30}
-                    height={30}
-                    alt="image"
-                  />
+                  <h1 className="text-white font-bold text-center w-full">-</h1>
                 </div>
                 <div className="grid grid-cols-3 gap-10">
                   <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
+                    src="https://play.zkasino.io/_next/static/media/grug.3d2f545d.png"
                     width={30}
                     height={30}
                     alt="image"
                   />
-                  <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
-                    width={30}
-                    height={30}
-                    alt="image"
-                  />
-                  <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
-                    width={30}
-                    height={30}
-                    alt="image"
-                  />
-                </div>
-                <div className="grid grid-cols-3 gap-10">
-                  <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
-                    width={30}
-                    height={30}
-                    alt="image"
-                  />
-                  <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
-                    width={30}
-                    height={30}
-                    alt="image"
-                  />
-                  <Image
-                    src="	https://play.zkasino.io/_next/static/media/soyjack_up.0c911b59.png"
-                    width={30}
-                    height={30}
-                    alt="image"
-                  />
+                 <h1 className="text-white font-bold text-center w-full">-</h1>
+                 <h1 className="text-white font-bold text-center w-full">-</h1>
                 </div>
               </div>
-              <div>
+              <div className="flex justify-center">
+                <div>
                 <h1 className="text-[15px] text-gray-400">Multiplier</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">100X</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">45X</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">20X</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">12X</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">10X</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">5X</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">3X</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">2X</h1>
+                </div>
               </div>
-              <div>
+              <div className="flex justify-center">
+                <div>
                 <h1 className="text-[15px] text-gray-400">Payout</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">-</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">-</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">-</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">-</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">-</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">-</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">-</h1>
+                <h1 className="text-white font-bold text-right h-[30px]">-</h1>
+                </div>
               </div>
             </div>
           </div>

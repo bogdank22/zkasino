@@ -1,4 +1,5 @@
 import "../styles/globals.css";
+import { useEffect } from 'react';
 import type { AppProps } from "next/app";
 
 import { WagmiConfig, createClient } from "wagmi";
@@ -6,6 +7,7 @@ import { mainnet, polygon, optimism, arbitrum, bscTestnet } from "wagmi/chains";
 import { ConnectKitProvider, getDefaultClient } from "connectkit";
 
 import Header from "../components/header/header";
+
 
 const client = createClient(
   getDefaultClient({

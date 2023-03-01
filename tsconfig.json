@@ -15,6 +15,6 @@
     "jsx": "preserve",
     "incremental": true
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "models/liveBets.js", "api/saveLive.js", "api/saveLive.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "models/liveBets.js", "pages/api/saveLive.js", "pages/api/saveLive.js"],
   "exclude": ["node_modules"]
 }
