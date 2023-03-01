@@ -1,8 +1,18 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
+interface ILive {
+  transaction: string;
+  date: Date;
+  playAddress: string;
+  wager: number;
+  numbets: number;
+  multiplier: number;
+  profit: number;
+}
+
 const LiveBets = () => {
-  const [lives, setLives] = useState([]);
+  const [lives, setLives] = useState<ILive[]>([]);
 
   useEffect(() => {
     getLives();
