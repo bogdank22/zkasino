@@ -158,7 +158,6 @@ export default function Slot() {
                     setWager(Number(e.target.value));
                     setTotalWager(Number(e.target.value) * multiBets);
                   }}
-                  defaultValue={0}
                 ></input>
               </div>
               <div></div>
@@ -194,21 +193,19 @@ export default function Slot() {
                     setStopGain(Number(e.target.value));
                   }}
                   placeholder="No limit"
-                  defaultValue={0}
                 />
               </div>
 
               <div className="flex justify-between mt-[2px]">
                 <h1 className="text-xs text-white">Stop Gain</h1>
-                {/* <input
+                <input
                   type="text"
                   className="w-[100px] h-[20px] bg-[#2A0E23] border-[1px] border-[#2A0E23] rounded-[4px] hover:border-[#f3d9ae] focus:outline-none font-bold text-[11px]  text-right text-white"
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setStopLoss(Number(e.target.value));
                   }}
                   placeholder="No limit"
-                  defaultValue={0}
-                /> */}
+                />
               </div>
 
               <h1 className="text-small text-white">Total Wager</h1>
