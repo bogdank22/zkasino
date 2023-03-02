@@ -1,5 +1,5 @@
 import "../styles/globals.css";
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import type { AppProps } from "next/app";
 
 import { WagmiConfig, createClient } from "wagmi";
@@ -7,6 +7,13 @@ import { mainnet, polygon, optimism, arbitrum, bscTestnet } from "wagmi/chains";
 import { ConnectKitProvider, getDefaultClient } from "connectkit";
 
 import Header from "../components/header/header";
+import Cursor from "../components/Cursor";
+
+export const isTouchScreen =
+  typeof window !== `undefined` &&
+  window.matchMedia("(pointer:coarse)").matches;
+
+  
 
 
 const client = createClient(
@@ -19,13 +26,21 @@ const client = createClient(
 );
 
 function MyApp({ Component, pageProps }: AppProps) {
+
+  const [display, setDisplay] = useState(false);
+
+  useEffect(() => {
+    setDisplay(true);
+  }, []);
+  
   return (
     <WagmiConfig client={client}>
       <ConnectKitProvider>
-        <div className="bg-radial-gradient relative h-[100vh] w-full">
+        
           <Header />
           <Component {...pageProps} />
-        </div>
+          {display && !isTouchScreen ? <Cursor /> : <></>}
+
       </ConnectKitProvider>
     </WagmiConfig>
   );

@@ -4,8 +4,11 @@ import { useAccount, useContract, useProvider, useSigner } from "wagmi";
 import Image from "next/image";
 import { Slider, Switch } from 'antd';
 import contracts from "../../const/abi.json";
+import { Hooka } from "../Hooka";
 
 export default function Slot() {
+  const isMounted = Hooka();
+
   const { address, isConnected } = useAccount();
   const provider = useProvider();
   const { data: signer, isError, isLoading } = useSigner();
@@ -108,6 +111,7 @@ export default function Slot() {
 
   return (
     <div>
+      
       <h1 className="text-center mt-5 text-[40px] tracking-[.25em] font-Space-Grotesk text-[#d7a85c] font-bold">
         SLOTS
       </h1>
@@ -424,6 +428,14 @@ export default function Slot() {
           </div>
         </div>
       </div>
+
+
+
     </div>
+
+
   );
+
 }
+
+
