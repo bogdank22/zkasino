@@ -4,8 +4,11 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import { useAccount, useContract, useProvider, useSigner } from 'wagmi';
 import contracts from '../../const/abi.json';
+import coinFlipContract from '../../const/coinflipabi.json';
+import { Hooka } from '../Hooka';
 
 export default function CoinFlip() {
+	const isMounted = Hooka()
 	const { address, isConnected } = useAccount();
 	const provider = useProvider();
 	const { data: signer } = useSigner();
@@ -22,11 +25,12 @@ export default function CoinFlip() {
 		signerOrProvider: signer,
 	});
 
-	const slotContractSigner: Contract | null = useContract({
-		address: contracts.slotContract.address,
-		abi: contracts.slotContract.abi,
+	const coinFlipContractSigner: Contract | null = useContract({
+		address: coinFlipContract.coinFlip.address,
+		abi: coinFlipContract.coinFlip.abi,
 		signerOrProvider: signer,
 	});
+	
 
 	const [approveValue, setApproveValue] = useState<Number>(0);
 	const [wager, setWager] = useState<number>(0);
@@ -35,18 +39,19 @@ export default function CoinFlip() {
 	const [stopLoss, setStopLoss] = useState<number>(0);
 	const [totalWager, setTotalWager] = useState<number>(0);
 	const [buttonDisable, setButtonDisable] = useState<boolean>(false);
+	const [isHeads, setIsHeads] = useState<boolean>(false);
 
 	useEffect(() => {
 		console.log('provider====', provider);
 		console.log('signer====', signer);
-		console.log('slotContract===', slotContractSigner);
+		console.log('coinFlipContract===', coinFlipContractSigner);
 		if (isConnected) getApproveAmount();
 	}, [isConnected]);
 
 	const getApproveAmount = async () => {
 		console.log(address);
 		console.log(tokenContractProvider);
-		const allowance = Number(await tokenContractProvider!.allowance(address, contracts.slotContract.address));
+		const allowance = Number(await tokenContractProvider!.allowance(address, coinFlipContract.coinFlip.address));
 		console.log('allowance = ', ethers.utils.formatEther(String(allowance)));
 		setApproveValue(Number(ethers.utils.formatEther(String(allowance))));
 	};
@@ -54,7 +59,7 @@ export default function CoinFlip() {
 	const ApproveClick = async () => {
 		try {
 			setButtonDisable(true);
-			const transaction = await tokenContractSigner!.approve(contracts.slotContract.address, ethers.utils.parseEther(String(totalWager)));
+			const transaction = await tokenContractSigner!.approve(coinFlipContract.coinFlip.address, ethers.utils.parseEther(String(totalWager)));
 			const tx = await transaction.wait();
 
 			if (tx !== null) {
@@ -66,6 +71,12 @@ export default function CoinFlip() {
 			console.log(err);
 		}
 	};
+	// const setHeads = async () => {
+	// 	setIsHeads(true)
+	// }
+
+
+
 
 	const playClick = async () => {
 		try {
@@ -78,7 +89,8 @@ export default function CoinFlip() {
 			console.log('address = ', address);
 			console.log('stopGain = ', _stopGain);
 			console.log('stopLoss = ', _stopLoss);
-			const transaction = await slotContractSigner!.Slots_Play(_wager, tokenAddress, multiBets, _stopGain, _stopLoss, { value: ethers.utils.parseEther('0.1') });
+			console.log('isHeads',isHeads)
+			const transaction = await coinFlipContractSigner!.CoinFlip_Play(_wager, tokenAddress,isHeads, multiBets, _stopGain, _stopLoss, { value: ethers.utils.parseEther('0.1') });
 			const tx = await transaction.wait();
 			if (tx !== null) {
 				getApproveAmount();
@@ -91,20 +103,24 @@ export default function CoinFlip() {
 	};
 
 	return (
+		<>
+		
+
 		<div>
+			
 			<p className='text-center mt-5 text-[40px] tracking-[.25em] font-Space-Grotesk text-[#d7a85c] font-bold'>COIN FLIP</p>
 			<div className='flex justify-center mt-[100px]'>
 				<div className='flex gap-4 w-[1300px] justify-center items-center'>
 					<div className='w-[300px] items-center flex flex-col'>
 						<div className='rounded-full -webkit-backface-visibility-hidden backface-visibility-hidden border-4 border-yellow-300 flex justify-center items-center shadow-yellow-300 dark:shadow-gray-900 mb-10'>
-							<Image src='https://play.zkasino.io/img/rps/heads.png' width='150px' height='150px' alt='image' className='w-full h-full rounded-full absolute -webkit-backface-visibility-hidden backface-visibility-hidden border-4 border-rim_color flex justify-center items-center' />
+							<Image  src='https://play.zkasino.io/img/rps/heads.png' width='150px' height='150px' alt='image' className='w-full h-full rounded-full absolute -webkit-backface-visibility-hidden backface-visibility-hidden border-4 border-rim_color flex justify-center items-center' />
 						</div>
 						<div className='flex justify-center items-center'>
 							<div className='rounded-full -webkit-backface-visibility-hidden backface-visibility-hidden border-4 border-yellow-300 flex justify-center items-center shadow-yellow-300 dark:shadow-gray-900'>
-								<Image src='https://play.zkasino.io/img/rps/heads.png' width='70px' height='70px' alt='image' className='w-full h-full rounded-full absolute -webkit-backface-visibility-hidden backface-visibility-hidden border-4 border-rim_color flex justify-center items-center' />
+								<Image onClick={()=>{setIsHeads(true)}} src='https://play.zkasino.io/img/rps/heads.png' width='70px' height='70px' alt='image' className='w-full h-full rounded-full absolute -webkit-backface-visibility-hidden backface-visibility-hidden border-4 border-rim_color flex justify-center items-center cursor-pointer' />
 							</div>
 							<div className='ml-2 flex items-center'>
-								<Image src='https://play.zkasino.io/img/rps/tails.png' width='70px' height='70px' alt='image' className='grayscale' />
+								<Image onClick={()=>{setIsHeads(false)}} src='https://play.zkasino.io/img/rps/tails.png' width='70px' height='70px' alt='image' className='grayscale cursor-pointer' />
 							</div>
 						</div>
 					</div>
@@ -182,7 +198,7 @@ export default function CoinFlip() {
 								<p className='h-small text-white text-xs font-bold'>{totalWager.toFixed(1)}</p>
 							</div>
 						</div>
-						<div className='w-[200px] p-1 pt-2 shadow-md relative container mt-2'>
+						<div className='w-[200px] p-1 pt-2 shadow-md relative container mt-2 bg-[#fdc66c]  text-center'>
 							{isConnected === false ? (
 								<p className='text-center text-gray-300 font-bold'>Connect First</p>
 							) : approveValue < totalWager ? (
@@ -190,7 +206,7 @@ export default function CoinFlip() {
 									Approve TUSD
 								</button>
 							) : (
-								<button className='text-center text-gray-300 font-bold cursor-pointer' disabled={buttonDisable} onClick={playClick}>
+								<button className='text-center text-gray-900 font-bold cursor-pointer border-[#fdc66c] ' disabled={buttonDisable} onClick={playClick}>
 									Play
 								</button>
 							)}
@@ -198,6 +214,9 @@ export default function CoinFlip() {
 					</div>
 				</div>
 			</div>
+			
+						
 		</div>
+		</>
 	);
 }

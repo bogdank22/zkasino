@@ -62,6 +62,7 @@ export default function Slot() {
 
   const ApproveClick = async () => {
     try {
+      console.log('approveValue', approveValue)
       setButtonDisable(true);
       const transaction = await tokenContractSigner!.approve(
         contracts.slotContract.address,

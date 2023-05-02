@@ -5,6 +5,10 @@
 
 /* Connect Button */
 
+:root{
+	--gold: #fdc66c;
+}
+
 .connectButton {
 	background-color: #c007a1;
 	color: #fff;
@@ -155,9 +159,11 @@ html {
 }
 
 .container {
-	background-color: hsla(0, 0%, 50%, 0.1);
+	/* background-color: hsla(0, 0%, 50%, 0.1); */
+
 	border-width: 1px;
 	border-style: solid;
 	border-color: rgba(97, 97, 97, 0.2);
 	border-radius: 4px;
+	box-shadow: 0 0 3px var(--gold),inset 0 0 3px var(--gold);
 }
