@@ -10,13 +10,13 @@
 }
 
 .connectButton {
-	background-color: #c007a1;
+	display: flex;
+	align-items: center;
 	color: #fff;
-	border-radius: 0.5rem;
 	padding: 0.5rem 1rem;
 	font-size: 1rem;
 	font-weight: 600;
-	border: none;
+	border: 1px solid #333333;
 	cursor: pointer;
 	transition: all 0.2s ease-in-out;
 	box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.2);
@@ -87,7 +87,7 @@ body {
 
 body,
 html {
-	overflow: hidden;
+	overflow-y: auto;
 }
 
 ::-webkit-scrollbar {
@@ -166,4 +166,34 @@ html {
 	border-color: rgba(97, 97, 97, 0.2);
 	border-radius: 4px;
 	box-shadow: 0 0 3px var(--gold),inset 0 0 3px var(--gold);
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type=number] {
+  -moz-appearance: textfield;
+}
+
+.head-tail:hover {
+	box-shadow: 0 0px 0px 0px rgb(229 224 36), 0 0px 12px 4px rgb(255 247 0);
+}
+.head-tail.select {
+	box-shadow: 0 0px 0px 0px rgb(229 224 36), 0 0px 12px 4px rgb(255 247 0);
+}
+
+.live-row {
+	transition: all .1s ease-out;
+	/* pointer-events: none; */
+	/* border-left: 3px solid transparent; */
+}
+
+.live-row:nth-of-type(2n) {
+	-webkit-backdrop-filter: brightness(120%);
+	backdrop-filter: brightness(120%);
 }
