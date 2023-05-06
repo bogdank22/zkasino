@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
-import { useNetwork, useAccount } from "wagmi";
+import { useNetwork, useAccount, useContract, useProvider, useContractEvent } from "wagmi";
 import axios from "axios";
 import Link from "next/link";
 import { ChainIcon } from "connectkit";
-import Chain from "connectkit/build/components/Common/Chain";
 import { MdContentCopy } from 'react-icons/md';
+import { BigNumber, Contract, ethers } from 'ethers';
+import contracts from '../../const/abi.json';
+import moment from "moment";
 
 interface ILive {
   transaction: string;
@@ -23,8 +25,8 @@ const LiveBets = () => {
   const [renderLives, setRenderLives] = useState<ILive[]>([]);
   const [personalLives, setPersonalLives] = useState<boolean>(false);
 
-  console.log(chain)
   useEffect(() => {
+    console.log("useEffect")
     getLives();
   }, []);
 
@@ -39,7 +41,7 @@ const LiveBets = () => {
 
   const getLives = async () => {
     await axios
-      .get("http://localhost:5000/api/live/getLives", {
+      .get("http://localhost:3000/api/livebets", {
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Content-Type": "application/json",
@@ -47,7 +49,7 @@ const LiveBets = () => {
         },
       })
       .then((res) => {
-        // console.log(res.data);
+        console.log(res);
         setLives(res.data);
         setRenderLives(res.data);
       })
@@ -55,6 +57,79 @@ const LiveBets = () => {
         console.log(err);
       });
   };
+
+  // const slotListener = async (
+  //   playerAddress: string,
+  //   wager: any,
+  //   payout: BigNumber,
+  //   tokenAddress: string,
+  //   slotIds: Array<any>,
+  //   multipliers: Array<any>,
+  //   payouts: Array<any>,
+  //   numGames: any,
+  //   event: any,
+  //   socket: any
+  // ) => {
+  //   try {
+  //     console.log("------------------------slotListener--------------");
+  //     console.log("playerAddress", playerAddress);
+  //     console.log("wager", ethers.utils.formatEther(wager));
+  //     console.log("payout", ethers.utils.formatEther(payout));
+  //     console.log("tokenAddress", tokenAddress);
+  //     console.log("slotIdlength", slotIds.length);
+  //     console.log("multipliersLength", multipliers.length);
+  //     console.log("payoutsLength", payouts.length);
+  //     console.log("numGames", numGames);
+  //     console.log("EventHash", event.transactionHash);
+
+  //     const newLive = {
+  //       transaction: event.transactionHash,
+  //       playAddress: playerAddress,
+  //       wager: ethers.utils.formatEther(wager),
+  //       numbets: slotIds.length,
+  //       multiplier: Number(ethers.utils.formatEther(payout)) / (Number(ethers.utils.formatEther(wager)) * slotIds.length),
+  //       profit: Number(ethers.utils.formatEther(payout)) - Number(ethers.utils.formatEther(wager)) * slotIds.length,
+  //     };
+
+  //     let response = await axios.post('/api/livebets', {
+  //       method: 'POST',
+  //       body: JSON.stringify(newLive),
+  //     });
+  //     console.log(response);
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  // };
+
+  useContractEvent({
+    address: "0x58ED08Bbd6c277ac50EA6e4018fF931A59bf62D7",
+    abi: contracts.slotContract.abi,
+    eventName: 'Slots_Outcome_Event',
+    async listener(playAddress: any, wager: any, payout: any, tokenAddress: any, slotIDs: any, multipliers: any, payouts: any, numGames: any, event: any) {
+      console.log("===================>", playAddress, wager, payout, tokenAddress, slotIDs, multipliers, payouts, numGames, event.transactionHash);
+      const newLive: ILive = {
+        transaction: event.transactionHash,
+        playAddress: playAddress,
+        wager: Number(ethers.utils.formatEther(wager)),
+        numbets: slotIDs.length,
+        multiplier: Number(ethers.utils.formatEther(payout)) / (Number(ethers.utils.formatEther(wager)) * slotIDs.length),
+        profit: Number(ethers.utils.formatEther(payout)) - Number(ethers.utils.formatEther(wager)) * slotIDs.length,
+        date: new Date
+      };
+
+      const res = await fetch('/api/livebets', {
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Methods": "GET,POST,OPTIONS,DELETE,PUT",
+        },
+        method: 'POST',
+        body: JSON.stringify(newLive)
+      });
+      console.log(newLive, res)
+      setRenderLives([...renderLives, newLive])
+    },
+  })
 
   return (
     <>
@@ -83,7 +158,7 @@ const LiveBets = () => {
             renderLives.map((live, index) => (
               <div className={`live-row grid grid-cols-6 justify-between p-2${live?.playAddress == address ? ' border-l-2 border-[#e92277] bg-gradient-to-r from-[#e9207780] to-transparent' : ''}`} key={index}>
                 <a href={`${chain?.blockExplorers?.default.url}/tx/${live?.transaction}`} target="_blank">
-                  <h1 className="cursor-pointer text-[#8e898c] hover:text-[#fdc66c]">{String(live.date).slice(11, 19)}</h1>
+                  <h1 className="cursor-pointer text-[#8e898c] hover:text-[#fdc66c]">{moment(live.date).format('hh:mm:ss')}</h1>
                 </a>
                 <h1 className="text-white flex items-center"><ChainIcon id={chain?.id} size={16} />&nbsp;Slots</h1>
                 <a href="#" className="flex items-center text-white">
