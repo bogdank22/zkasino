@@ -119,7 +119,7 @@ const LiveBets = (props: Props) => {
         playAddress: playAddress,
         wager: Number(ethers.utils.formatEther(wager)),
         numbets: payouts.length,
-        multiplier: Number(ethers.utils.formatEther(payout)),
+        multiplier: Number(ethers.utils.formatEther(payout)) / (Number(ethers.utils.formatEther(wager))*numGames?.length),
         profit: Number(ethers.utils.formatEther(payout)) - Number(ethers.utils.formatEther(wager))*numGames?.length,
         date: new Date
       };
