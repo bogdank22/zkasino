@@ -30,6 +30,10 @@ const Header = () => {
     setInitialRenderComplete(true);
     if (isConnected) {
       // console.log(address, isConnected, data);
+      if (!data) {
+        setuserTokenBalance("0.00");
+        return;
+      };
       const value = BigNumber.from(data?._hex);
       setuserTokenBalance(ethers.utils.formatUnits(value, 18));
     } else {
@@ -76,9 +80,14 @@ const Header = () => {
             {
               !chain ? <></> :
                 <div className="bg-[#c007a1] w-[200px]">
-                  <div className="flex justify-end items-center peer px-2 py-2 bg-transparnet hover:bg-[#c007a1aa] text-center text-white font-bold cursor-pointer">
-                    <p className="mx-3">{chain?.name}</p>
-                    <ChainIcon size={32} id={chain?.id} />
+                  <div className="flex justify-center h-full items-center peer px-2 py-2 bg-transparnet hover:bg-[#c007a1aa] text-center text-white font-bold cursor-pointer">
+                    {
+                      chains.find(ch => ch.id === chain?.id) ?
+                        <>
+                          <p className="mx-3">{chain?.name}</p>
+                          <ChainIcon size={32} id={chain?.id} />
+                        </> : "Wrong network"
+                    }
                   </div>
                   <div className="hidden peer-hover:absolute peer-hover:flex hover:absolute hover:flex w-[200px] flex-col bg-[#322e2e] drop-shadow-lg border border-solid border-[#333333]">
                     {

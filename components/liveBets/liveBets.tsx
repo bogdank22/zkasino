@@ -131,6 +131,36 @@ const LiveBets = () => {
     },
   })
 
+  // useContractEvent({
+  //   address: "0x58ED08Bbd6c277ac50EA6e4018fF931A59bf62D7",
+  //   abi: contracts.slotContract.abi,
+  //   eventName: 'CoinFlip_Outcome_Event',
+  //   async listener(playAddress: any, wager: any, payout: any, tokenAddress: any, slotIDs: any, coinOutcomes: any, payouts: any, numGames: any, event: any) {
+  //     console.log("===================>", playAddress, wager, payout, tokenAddress, slotIDs, coinOutcomes, payouts, numGames, event.transactionHash);
+  //     const newLive: ILive = {
+  //       transaction: event.transactionHash,
+  //       playAddress: playAddress,
+  //       wager: Number(ethers.utils.formatEther(wager)),
+  //       numbets: slotIDs.length,
+  //       multiplier: Number(ethers.utils.formatEther(payout)) / (Number(ethers.utils.formatEther(wager)) * slotIDs.length),
+  //       profit: Number(ethers.utils.formatEther(payout)) - Number(ethers.utils.formatEther(wager)) * slotIDs.length,
+  //       date: new Date
+  //     };
+
+  //     const res = await fetch('/api/livebets', {
+  //       headers: {
+  //         "Access-Control-Allow-Origin": "*",
+  //         "Content-Type": "application/json",
+  //         "Access-Control-Allow-Methods": "GET,POST,OPTIONS,DELETE,PUT",
+  //       },
+  //       method: 'POST',
+  //       body: JSON.stringify(newLive)
+  //     });
+  //     console.log(newLive, res)
+  //     setRenderLives([...renderLives, newLive])
+  //   },
+  // })
+
   return (
     <>
       <div className="bg-white/5 w-[945px] my-[50px] mx-auto p-2">

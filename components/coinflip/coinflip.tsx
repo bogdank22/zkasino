@@ -2,7 +2,7 @@ import { Slider, notification } from 'antd';
 import { Contract, ethers } from 'ethers';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { useAccount, useContract, useProvider, useSigner } from 'wagmi';
+import { useAccount, useContract, useProvider, useSigner, useSwitchNetwork, useNetwork } from 'wagmi';
 import contracts from '../../const/abi.json';
 import coinFlipContract from '../../const/coinflipabi.json';
 import { Hooka } from '../Hooka';
@@ -12,6 +12,8 @@ import Link from 'next/link';
 export default function CoinFlip() {
 	const isMounted = Hooka()
 	const { address, isConnected } = useAccount();
+	const { chains, chain } = useNetwork();
+	const { switchNetwork } = useSwitchNetwork();
 	const provider = useProvider();
 	const { data: signer } = useSigner();
 
@@ -49,8 +51,18 @@ export default function CoinFlip() {
 		console.log('signer====', signer);
 		console.log('coinFlipContract===', coinFlipContractSigner);
 		setInitialRenderComplete(true);
-		if (isConnected) getApproveAmount();
-	}, [isConnected]);
+		if (chains.find(ch => ch.id === chain?.id)) {
+			if (isConnected && chain?.id == 97) {
+				console.log("change wager")
+				wager > 0 ? setButtonDisable(false) : setButtonDisable(true);
+				getApproveAmount();
+			} else {
+				setButtonDisable(true);
+			}
+		} else {
+			setButtonDisable(true);
+		}
+	}, [isConnected, chain, wager]);
 
 	const getApproveAmount = async () => {
 		console.log(address);
@@ -250,19 +262,20 @@ export default function CoinFlip() {
 										<p className='h-small text-white text-xs font-bold'>{totalWager.toFixed(1)}</p>
 									</div>
 								</div>
-								<div className='w-[200px] shadow-md relative container mt-2 bg-[#fdc66c]  text-center'>
+								<div className='w-[200px] shadow-md relative container mt-2 text-center'>
 									<>
-										{isConnected === false ? (
-											<><p className='text-center text-gray-300 font-bold'>Connect First</p></>
-										) : Number(approveValue) < totalWager ? (
-											<button className='w-full p-2 text-center text-gray-300 font-bold cursor-pointer border-[#fdc66c] disabled:bg-[#61616133]' onClick={ApproveClick} disabled={buttonDisable}>
-												Approve TUSD
-											</button>
-										) : (
-											<button className='w-full p-2 text-center text-gray-900 font-bold cursor-pointer border-[#fdc66c] disabled:bg-[#61616133]' disabled={buttonDisable} onClick={playClick}>
-												Play
-											</button>
-										)}
+										{isConnected === false || chains.find(ch => ch.id === chain?.id) === undefined || chain?.id !== 97 ? (
+											<><p className='text-center text-[#8e898c] py-2 font-bold'>Connect First</p></>
+										) : wager <= 0 ? <p className='text-center py-2 text-[#8e898c] font-bold'>Enter a wager</p>
+											: Number(approveValue) < totalWager ? (
+												<button className='w-full p-2 text-center text-gray-300 font-bold cursor-pointer border-[#fdc66c] disabled:bg-[#61616133]' onClick={ApproveClick} disabled={buttonDisable}>
+													Approve TUSD
+												</button>
+											) : (
+												<button className='w-full p-2 text-center text-gray-900 font-bold cursor-pointer rounded border-[#fdc66c] bg-[#fdc66c] disabled:bg-transparent disabled:cursor-default' disabled={buttonDisable} onClick={playClick}>
+													Play
+												</button>
+											)}
 									</>
 								</div>
 							</div>
