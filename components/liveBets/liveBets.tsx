@@ -56,7 +56,7 @@ const LiveBets = (props: Props) => {
         let lives;
         console.log("gameType", props);
 
-        switch(props?.gameType) {
+        switch (props?.gameType) {
           case 0:
             lives = res?.data.filter((item: ILive) => item.game == 'Slots');
             setLives(lives);
@@ -112,15 +112,15 @@ const LiveBets = (props: Props) => {
     abi: coinflipContract.coinFlip.abi,
     eventName: 'CoinFlip_Outcome_Event',
     async listener(playAddress: any, wager: any, payout: any, tokenAddress: any, coinOutcomes: any, payouts: any, numGames: any, event: any) {
-      console.log("===================>", playAddress, wager, Number(ethers.utils.formatEther(payout)), tokenAddress, coinOutcomes, payouts, numGames, event.transactionHash);
+      console.log("===================>",  Number(ethers.utils.formatEther(payout)), Number(ethers.utils.formatEther(wager)), payouts?.length);
       const newLive: ILive = {
         game: "Coin Flip",
         transaction: event.transactionHash,
         playAddress: playAddress,
         wager: Number(ethers.utils.formatEther(wager)),
         numbets: payouts.length,
-        multiplier: Number(ethers.utils.formatEther(payout)) / (Number(ethers.utils.formatEther(wager))*numGames?.length),
-        profit: Number(ethers.utils.formatEther(payout)) - Number(ethers.utils.formatEther(wager))*numGames?.length,
+        multiplier: Number(ethers.utils.formatEther(payout)) / (Number(ethers.utils.formatEther(wager)) * payouts?.length),
+        profit: Number(ethers.utils.formatEther(payout)) - Number(ethers.utils.formatEther(wager)) * payouts?.length,
         date: new Date
       };
 
