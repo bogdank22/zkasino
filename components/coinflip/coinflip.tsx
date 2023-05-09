@@ -13,7 +13,6 @@ export default function CoinFlip() {
 	const isMounted = Hooka()
 	const { address, isConnected } = useAccount();
 	const { chains, chain } = useNetwork();
-	const { switchNetwork } = useSwitchNetwork();
 	const provider = useProvider();
 	const { data: signer } = useSigner();
 
@@ -266,7 +265,7 @@ export default function CoinFlip() {
 											<><p className='text-center text-[#8e898c] py-2 font-bold'>Connect First</p></>
 										) : wager <= 0 ? <p className='text-center py-2 text-[#8e898c] font-bold'>Enter a wager</p>
 											: Number(approveValue) < totalWager ? (
-												<button className='w-full p-2 text-center text-gray-300 font-bold cursor-pointer border-[#fdc66c] disabled:bg-[#61616133]' onClick={ApproveClick} disabled={buttonDisable}>
+												<button className='w-full p-2 text-center text-gray-300 font-bold cursor-pointer rounded border-[#fdc66c] bg-[#fdc66c] disabled:bg-[#61616133] disabled:cursor-default' onClick={ApproveClick} disabled={buttonDisable}>
 													Approve TUSD
 												</button>
 											) : (

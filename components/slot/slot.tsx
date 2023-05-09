@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Contract, ethers } from "ethers";
-import { useAccount, useContract, useProvider, useSigner } from "wagmi";
+import { useAccount, useContract, useProvider, useSigner, useNetwork } from "wagmi";
 import Image from "next/image";
 import { Slider, Switch, notification } from 'antd';
 import contracts from "../../const/abi.json";
@@ -12,6 +12,7 @@ export default function Slot() {
 
   const { address, isConnected } = useAccount();
   const provider = useProvider();
+  const { chains, chain } = useNetwork();
   const { data: signer, isError, isLoading } = useSigner();
 
   const tokenContractProvider: Contract | null = useContract({
@@ -47,9 +48,18 @@ export default function Slot() {
     console.log("signer====", signer);
     console.log("slotContract===", slotContractSigner);
     setInitialRenderComplete(true);
-    if (isConnected)
-      getApproveAmount();
-  }, [isConnected]);
+    if (chains.find(ch => ch.id === chain?.id)) {
+      if (isConnected && chain?.id == 97) {
+        console.log("change wager")
+        wager > 0 ? setButtonDisable(false) : setButtonDisable(true);
+        getApproveAmount();
+      } else {
+        setButtonDisable(true);
+      }
+    } else {
+      setButtonDisable(true);
+    }
+  }, [isConnected, chain, wager]);
 
   const getApproveAmount = async () => {
     console.log(address);
@@ -184,7 +194,7 @@ export default function Slot() {
                 </div>
               </div>
               <div className="w-[200px]">
-                <div className="py-2 px-4 bg-white/5 rounded-[4px]">
+                <div className="shadow-md relative container py-2 px-4 bg-white/5 rounded-[4px]">
                   <h1 className="h-small text-white">Wager</h1>
                   <div className="flex justify-between bg-[#2A0E23] p-[3px] border-[1px] border-[#2A0E23] hover:border-[#f3d9ae] mt-[5px] rounded-[4px]">
                     <button className='text-slate-600 font-bold' onClick={() => { setWager(0); setTotalWager(0); }}>X</button>
@@ -201,7 +211,7 @@ export default function Slot() {
                   </div>
                   <div></div>
                 </div>
-                <div className="py-2 px-4 bg-white/5 rounded-[4px] mt-2">
+                <div className="shadow-md relative container py-2 px-4 bg-white/5 rounded-[4px] mt-2">
                   <div className="flex justify-between">
                     <h1 className="text-xs text-white">Multiple Bets</h1>
                     <div className="flex items-center">
@@ -262,28 +272,27 @@ export default function Slot() {
                     </h1>
                   </div>
                 </div>
-                <div className="py-2 px-4 bg-white/5 rounded-[4px] mt-2 flex justify-center">
-                  {isConnected === false ? (
-                    <h1 className="text-center text-gray-300 font-bold">
-                      Connect First
-                    </h1>
-                  ) : Number(approveValue) < totalWager ? (
-                    <button
-                      className="text-center text-gray-300 font-bold cursor-pointer"
-                      onClick={ApproveClick}
-                      disabled={buttonDisable}
-                    >
-                      Approve TUSD
-                    </button>
-                  ) : (
-                    <button
-                      className="text-center text-gray-300 font-bold cursor-pointer"
-                      disabled={buttonDisable}
-                      onClick={playClick}
-                    >
-                      Play
-                    </button>
-                  )}
+                <div className="shadow-md relative container rounded-[4px] mt-2 flex justify-center text-center">
+                  {isConnected === false || chains.find(ch => ch.id === chain?.id) === undefined || chain?.id !== 97 ? (
+                    <p className="text-center text-[#8e898c] py-2 font-bold">Connect First</p>
+                  ) : wager <= 0 ? <p className='text-center py-2 text-[#8e898c] font-bold'>Enter a wager</p>
+                    : Number(approveValue) < totalWager ? (
+                      <button
+                        className="w-full p-2 text-center text-gray-900 font-bold cursor-pointer rounded border-[#fdc66c] bg-[#fdc66c] disabled:bg-transparent disabled:cursor-default"
+                        onClick={ApproveClick}
+                        disabled={buttonDisable}
+                      >
+                        Approve TUSD
+                      </button>
+                    ) : (
+                      <button
+                        className="w-full p-2 text-center text-gray-900 font-bold cursor-pointer rounded border-[#fdc66c] bg-[#fdc66c] disabled:bg-transparent disabled:cursor-default"
+                        disabled={buttonDisable}
+                        onClick={playClick}
+                      >
+                        Play
+                      </button>
+                    )}
                 </div>
               </div>
               <div className="bg-white/5 p-4 rounded-[8px]">
