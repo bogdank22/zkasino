@@ -20,9 +20,11 @@ export default async function handler(
       console.log("numbets", (req.body.numbets));
       console.log("multiplier", req.body.multiplier);
       console.log("profit", req.body.profit);
+      console.log("game", req.body.game);
       console.log("date", req.body.date);
 
       const newLive = {
+        game: req.body.game,
         transaction: req.body.transaction,
         playAddress: req.body.playAddress,
         wager: Number(req.body.wager),

@@ -3,7 +3,7 @@ import CoinFlip from '../../components/coinflip/coinflip';
 import LiveBets from '../../components/liveBets/liveBets';
 
 const CoinFlipPage: NextPage = () => {
-	return <><CoinFlip /><LiveBets /></>;
+	return <><CoinFlip /><LiveBets gameType={1} /></>;
 };
 
 export default CoinFlipPage;

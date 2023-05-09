@@ -107,13 +107,11 @@ export default function CoinFlip() {
 			console.log('stopLoss = ', _stopLoss);
 			console.log('isHeads', isHeads)
 			let transaction;
-			for (let i = 0; i < multiBets; i++) {
-				transaction = await coinFlipContractSigner!.CoinFlip_Play(_wager, tokenAddress, isHeads, multiBets, _stopGain, _stopLoss, { value: ethers.utils.parseEther('0.05') });
-				const tx = await transaction.wait();
-				if (tx !== null) {
-					setButtonDisable(false);
-					openNotification('info');
-				}
+			transaction = await coinFlipContractSigner!.CoinFlip_Play(_wager, tokenAddress, isHeads, multiBets, _stopGain, _stopLoss, { value: ethers.utils.parseEther('0.05') });
+			const tx = await transaction.wait();
+			if (tx !== null) {
+				setButtonDisable(false);
+				openNotification('info');
 			}
 			getApproveAmount();
 		} catch (err) {

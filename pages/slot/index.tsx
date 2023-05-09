@@ -5,7 +5,7 @@ import LiveBets from '../../components/liveBets/liveBets';
 const SlotPage: NextPage = () => {
 	return <>
 		<Slot />
-		<LiveBets />
+		<LiveBets gameType={0} />
 	</>;
 };
 
